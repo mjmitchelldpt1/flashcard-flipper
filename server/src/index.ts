@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import cors from "cors";
 import Deck from "./models/Deck";
 import { config } from "dotenv";
+import { getDecksController } from "./controllers/getDecksController";
+import { createDeckController } from "./controllers/createDeckController";
+import { deleteDeckController } from "./controllers/deleteDeckController";
 
 config();
 const PORT = 5000;
@@ -11,20 +14,11 @@ const app = express();
 app.use(cors());
 // express pulls in ability to call JSON body in thunder client via EXPRESS MIDDLEWARE FUNCTION
 app.use(express.json());
-
-app.get("/decks", async (req: Request, res: Response) => {
-  // call data from mongoDB custom decks
-  const decks = await Deck.find();
-  //return data back to user
-  res.json(decks);
-});
-
-app.post("/decks", async (req: Request, res: Response) => {
-  //takes req.body in thundercloud to give newDeck to pass whatever title is given
-  const newDeck = new Deck({ title: req.body.title });
-  const createdDeck = await newDeck.save();
-  res.json(createdDeck);
-});
+//moved logic to a controller to clean up the code.  Built here first then transitioned over.
+//each takes a controller function but the argument is passed in the CONTROLLER, and just exported here without controller(argument)
+app.get("/decks", getDecksController);
+app.post("/decks", createDeckController);
+app.delete("/decks/:deckId", deleteDeckController);
 
 mongoose.connect(process.env.MONGO_URL!).then(() => {
   console.log(`listening on PORT ${PORT}`);
