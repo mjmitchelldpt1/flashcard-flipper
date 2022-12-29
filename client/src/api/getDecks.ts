@@ -2,6 +2,7 @@ import { API_URL } from "./config";
 
 export type TypeDeck = {
   title: string;
+  cards: string[];
   _id: string;
 };
 // couple the typedeck to the get request.  We are returning an array of decks
